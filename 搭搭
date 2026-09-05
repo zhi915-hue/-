@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一元二次方程式求解器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 420px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+        }
+        .formula {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .input-field {
+            flex: 1;
+        }
+        .input-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .input-field input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #eef2f5;
+            border-radius: 6px;
+            color: #222;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>一元二次方程式求解器</h2>
+    <div class="formula">ax² + bx + c = 0</div>
+
+    <div class="input-group">
+        <div class="input-field">
+            <label for="a">a</label>
+            <input type="number" id="a" step="any" placeholder="0">
+        </div>
+        <div class="input-field">
+            <label for="b">b</label>
+            <input type="number" id="b" step="any" placeholder="0">
+        </div>
+        <div class="input-field">
+            <label for="c">c</label>
+            <input type="number" id="c" step="any" placeholder="0">
+        </div>
+    </div>
+
+    <button onclick="calculate()">計算求解</button>
+
+    <div class="result-box" id="result">
+        請輸入係數並點擊「計算求解」。
+    </div>
+</div>
+
+<script>
+function calculate() {
+    // 讀取輸入欄位的值，若未填則預設為 0
+    let a = parseFloat(document.getElementById('a').value) || 0;
+    let b = parseFloat(document.getElementById('b').value) || 0;
+    let c = parseFloat(document.getElementById('c').value) || 0;
+    let resultDiv = document.getElementById('result');
+
+    // 1. 特殊情況處理
+    if (a === 0 && b !== 0) {
+        let root = -c / b;
+        resultDiv.innerHTML = `<strong>這是一次方程式：</strong><br>解為 x = ${root.toFixed(3)}`;
+        return;
+    }
+    if (a === 0 && b === 0) {
+        resultDiv.innerHTML = `<strong>? 何意味啊</strong><br>這是一個無意義的等式 (${c} = 0)`;
+        return;
+    }
+
+    // 2. 計算判別式 D = b^2 - 4ac
+    let D = b * b - 4 * a * c;
+
+    // 3. 根據判別式判斷結果
+    if (D < 0) {
+        // 計算虛根
+        let realPart = (-b / (2 * a)).toFixed(2);
+        let imagPart = (Math.sqrt(-D) / (2 * a)).toFixed(2);
+        resultDiv.innerHTML = `<strong>無實根 (共軛複數根)：</strong><br>
+                               x₁ = ${realPart} + ${imagPart}i<br>
+                               x₂ = ${realPart} - ${imagPart}i`;
+    } 
+    else if (D === 0) {
+        let root = (-b / (2 * a)).toFixed(2);
+        resultDiv.innerHTML = `<strong>重根：</strong><br>x = ${root}`;
+    } 
+    else {
+        let root1 = ((-b + Math.sqrt(D)) / (2 * a)).toFixed(2);
+        let root2 = ((-b - Math.sqrt(D)) / (2 * a)).toFixed(2);
+        resultDiv.innerHTML = `<strong>兩相異實根：</strong><br>
+                               x₁ = ${root1}<br>
+                               x₂ = ${root2}`;
+    }
+}
+</script>
+
+</body>
+</html>
